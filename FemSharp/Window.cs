@@ -17,8 +17,12 @@ internal class Window : GameWindow
         ClientSize = (width, height);
         Title = title;
         _renderer = new Renderer();
-        _renderer.ClearColor(new OpenTK.Mathematics.Color4(0.2f, 0.3f, 0.3f, 1.0f));
-        _renderer.SetLineWidth(3);
+        _renderer.ClearColor(new Color4(0.2f, 0.3f, 0.3f, 1.0f));
+    }
+
+    public void AddMesh(Mesh2D mesh)
+    {
+        DrawableObjects.Add(new DrawableMesh2D(mesh));
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
@@ -29,6 +33,12 @@ internal class Window : GameWindow
         {
             Close();
         }
+
+        foreach (var drawable in DrawableObjects)
+        {
+            drawable.Update();
+        }
+
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
