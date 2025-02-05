@@ -10,6 +10,12 @@ internal class ArrayBuffer<T> : IDisposable where T : struct
     public BufferTarget BufferTarget { get; private set; }
 
     public int Handle { get; private set; }
+
+    public int Length { get; private set; }
+
+    public int Size { get; private set; }
+
+    public int Count { get; private set; }
     
     public ArrayBuffer(BufferTarget target, T[] data, BufferUsageHint bufferUsage = BufferUsageHint.StaticDraw)
     {
@@ -26,7 +32,11 @@ internal class ArrayBuffer<T> : IDisposable where T : struct
     public void SetData(T[] data)
     {
         Bind();
-        GL.BufferData(BufferTarget, data.Length * Unsafe.SizeOf<T>(), data, BufferUsageHint);
+        Length = data.Length;
+        Size = data.Length * Unsafe.SizeOf<T>();
+        // TODO: Beter way to do this
+        Count = Size / typeof(T).GetProperties().Count();
+        GL.BufferData(BufferTarget, Size, data, BufferUsageHint);
     }
 
     public void SetData(T[] data, BufferUsageHint bufferUsage)
@@ -45,5 +55,8 @@ internal class ArrayBuffer<T> : IDisposable where T : struct
         Unbind();
         GL.DeleteBuffer(Handle);
         Handle = 0;
+        Length = 0;
+        Size = 0;
+        Count = 0;
     }
 }
