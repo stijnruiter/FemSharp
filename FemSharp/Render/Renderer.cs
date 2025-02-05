@@ -27,28 +27,28 @@ internal class Renderer : IDisposable
         GL.LineWidth(width);
     }
 
-    public void DrawElements<T>(Color4 color, ArrayBuffer<T> elements) where T : struct
+    public void DrawElements(Color4 color, ArrayBuffer<TriangularElement> elements)
     {
         SolidColorShader.Use();
         SolidColorShader.SetColor("drawColor", color);
         elements.Bind();
-        GL.DrawElements(PrimitiveType.Triangles, elements.Count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, elements.Length * 3, DrawElementsType.UnsignedInt, 0);
     }
 
-    public void DrawLines<T>(Color4 color, ArrayBuffer<T> elements) where T : struct
+    public void DrawLines(Color4 color, ArrayBuffer<LineElement> elements)
     {
         SolidColorShader.Use();
         SolidColorShader.SetColor("drawColor", color);
         elements.Bind();
-        GL.DrawElements(PrimitiveType.Lines, elements.Count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Lines, elements.Length * 2, DrawElementsType.UnsignedInt, 0);
     }
 
-    public void DrawLinesClosed<T>(Color4 color, ArrayBuffer<T> elements) where T : struct
+    public void DrawLinesClosed(Color4 color, ArrayBuffer<LineElement> elements)
     {
         SolidColorShader.Use();
         SolidColorShader.SetColor("drawColor", color);
         elements.Bind();
-        GL.DrawElements(PrimitiveType.LineLoop, elements.Count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.LineLoop, elements.Length * 2, DrawElementsType.UnsignedInt, 0);
     }
 
     public void Dispose()

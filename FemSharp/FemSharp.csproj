@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -14,9 +14,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\shader.fragment.glsl" />
-    <EmbeddedResource Include="Resources\shader.vertex.glsl">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\shader.vertex.glsl" />
   </ItemGroup>
 
   <ItemGroup>

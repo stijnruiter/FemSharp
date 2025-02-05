@@ -1,69 +1,96 @@
 ﻿using FemSharp.Render;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace FemSharp;
 
-
-[StructLayout(LayoutKind.Sequential)]
-internal record struct Vertex(float X, float Y, float Z);
-
-[StructLayout(LayoutKind.Sequential)]
-internal record struct TriangularElement(uint I, uint J, uint K);
-
-[StructLayout(LayoutKind.Sequential)]
-internal record struct LineElement(uint I, uint J);
-
-internal class Mesh2D(Vertex[] vertices, TriangularElement[] interior, LineElement[] boundary)
+internal struct Rect(float left, float right, float bottom, float top)
 {
-    public Vertex[] Vertices { get; } = vertices;
-    public TriangularElement[] InteriorElements { get; } = interior;
-    public LineElement[] BoundaryElements { get; } = boundary;
+    public float Left = left;
+    public float Right = right;
+    public float Top = top;
+    public float Bottom = bottom;
+
+    public readonly float Width => Right - Left;
+    public readonly float Height => Top - Bottom;
 }
 
-internal class DrawableMesh2D : IDrawableObject
+internal class Mesh2D
 {
-    public DrawableMesh2D(Mesh2D mesh)
+    public Vertex[] Vertices { get; }
+    public TriangularElement[] InteriorElements { get; }
+    public LineElement[] BoundaryElements { get; }
+    public LineElement[] InteriorEdges { get; }
+
+    public Mesh2D(Vertex[] vertices, TriangularElement[] interior, LineElement[] boundary)
     {
-        _mesh = mesh;
-        _vertexArray = new VertexArray();
-        _dataBuffer = new ArrayBuffer<Vertex>(BufferTarget.ArrayBuffer, mesh.Vertices);
-        _interiorElementBuffer = new ArrayBuffer<TriangularElement>(BufferTarget.ElementArrayBuffer, mesh.InteriorElements);
-        _boundaryElementBuffer = new ArrayBuffer<LineElement>(BufferTarget.ElementArrayBuffer, mesh.BoundaryElements);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Unsafe.SizeOf<Vertex>(), 0);
-        GL.EnableVertexAttribArray(0);
+        Vertices = vertices;
+        InteriorElements = interior;
+        BoundaryElements = boundary;
+        InteriorEdges = EdgesFromElements(interior);
     }
 
-    public void Update()
+    private static LineElement[] EdgesFromElements(TriangularElement[] elements)
     {
-        _dataBuffer.SetData(_mesh.Vertices);
-        _interiorElementBuffer.SetData(_mesh.InteriorElements);
-        _boundaryElementBuffer.SetData(_mesh.BoundaryElements);
+        var edges = new List<LineElement>();
+        foreach (var element in elements)
+        {
+            edges.Add(UnidirectionalEdge(element.I, element.J));
+            edges.Add(UnidirectionalEdge(element.J, element.K));
+            edges.Add(UnidirectionalEdge(element.K, element.I));
+        }
+        LineElement UnidirectionalEdge(uint x, uint y) => new LineElement(x < y ? x : y, x < y ? y : x);
+        return edges.Distinct().ToArray();
     }
 
-    public void Dispose()
+    public static Mesh2D NaiveRectangle(Rect rect, uint nx, uint ny)
     {
-        _vertexArray.Dispose();
-        _dataBuffer.Dispose();
-        _interiorElementBuffer.Dispose();
-        _boundaryElementBuffer.Dispose();
+        List<Vertex> vertices = new List<Vertex>();
+        List<TriangularElement> interiorElements = new List<TriangularElement>();
+        List<LineElement> boundaryElements = new List<LineElement>();
+
+        float dx = rect.Width / (nx);
+        float dy = rect.Height / (ny);
+
+        for (uint j = 0; j <= ny; j++)
+        {
+            for (uint i = 0; i <= nx; i++)
+            {
+                var x = rect.Left + dx * i;
+                var y = rect.Bottom + dy * j;
+                vertices.Add(new Vertex(x, y, 0f));
+            }
+        }
+
+        for (uint j = 0; j < ny; j++)
+        {
+            for (uint i = 0; i < nx; i++)
+            {
+                // 3--2
+                // |  |
+                // 0--1
+
+                var corner0 = i + (nx + 1) * j;
+                var corner1 = i + 1 + (nx + 1) * j;
+                var corner2 = i + 1 + (nx + 1) * (j + 1);
+                var corner3 = i + (nx + 1) * (j + 1);
+
+                interiorElements.Add(new TriangularElement(corner0, corner1, corner2));
+                interiorElements.Add(new TriangularElement(corner0, corner2, corner3));
+            }
+        }
+
+        for (uint i = 0; i < nx; i++)
+        {
+            boundaryElements.Add(new LineElement(i, i + 1));
+            boundaryElements.Add(new LineElement(i + (nx + 1) * ny, i + 1 + (nx + 1) * ny));
+        }
+
+        for (uint j = 0; j < ny; j++)
+        {
+            //boundaryElements.Add(new LineElement(i, i + 1));
+            boundaryElements.Add(new LineElement((nx + 1) * j, (nx + 1) * (j + 1)));
+            boundaryElements.Add(new LineElement((nx + 1) * j + nx, (nx + 1) * (j + 1) + nx));
+        }
+
+        return new Mesh2D(vertices.ToArray(), interiorElements.ToArray(), boundaryElements.ToArray());
     }
-
-    public void Draw(Renderer renderer)
-    {
-        renderer.SetLineWidth(3);
-        renderer.DrawElements(Color4.Red, _interiorElementBuffer);
-        renderer.DrawLinesClosed(Color4.White, _interiorElementBuffer);
-        renderer.DrawLines(Color4.Green, _boundaryElementBuffer);
-    }
-
-    private readonly Mesh2D _mesh;
-
-    private readonly VertexArray _vertexArray;
-    private readonly ArrayBuffer<Vertex> _dataBuffer;
-    private readonly ArrayBuffer<TriangularElement> _interiorElementBuffer;
-    private readonly ArrayBuffer<LineElement> _boundaryElementBuffer;
 }
-
