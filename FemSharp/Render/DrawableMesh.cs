@@ -42,11 +42,15 @@ internal class DrawableMesh2D : IDrawableObject
 
     public void Draw(Renderer renderer)
     {
-        renderer.SetLineWidth(3);
-        renderer.DrawElements(Color4.Red, _interiorElementBuffer);
-        renderer.DrawLines(Color4.White, _interiorElementEdgesBuffer);
-        renderer.DrawLines(Color4.Green, _boundaryElementBuffer);
+        renderer.SetLineWidth(5);
+        renderer.DrawElements(ColorElements, _interiorElementBuffer);
+        renderer.DrawLines(ColorElementEdges, _interiorElementEdgesBuffer);
+        renderer.DrawLines(ColorBoundaryEdges, _boundaryElementBuffer);
     }
+
+    public Color4 ColorElements { get; set; } = Color4.BurlyWood;
+    public Color4 ColorElementEdges { get; set; } = Color4.Coral;
+    public Color4 ColorBoundaryEdges { get; set; } = Color4.Black;
 
     private readonly Mesh2D _mesh;
 
