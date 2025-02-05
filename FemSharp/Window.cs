@@ -22,6 +22,12 @@ public record struct TriangularElement(uint I, uint J, uint K)
     public static int Count => 3;
 }
 
+[StructLayout(LayoutKind.Sequential)]
+public record struct LineElement(uint I, uint J)
+{
+    public static int Count => 2;
+}
+
 internal class Window : GameWindow
 {
     public Window(int width, int height, string title)
@@ -35,7 +41,8 @@ internal class Window : GameWindow
 
         _vertexArray = new VertexArray();
         _dataBuffer = new ArrayBuffer<Vertex>(BufferTarget.ArrayBuffer, _vertices);
-        _indexBuffer = new ArrayBuffer<TriangularElement>(BufferTarget.ElementArrayBuffer, _indices);
+        _interiorElementBuffer = new ArrayBuffer<TriangularElement>(BufferTarget.ElementArrayBuffer, _interiorElement);
+        _boundaryElementBuffer = new ArrayBuffer<LineElement>(BufferTarget.ElementArrayBuffer, _boundaryElement);
         GL.VertexAttribPointer(0, Vertex.Count, Vertex.PointerType, false, Unsafe.SizeOf<Vertex>(), 0);
         GL.EnableVertexAttribArray(0);
 
@@ -62,11 +69,15 @@ internal class Window : GameWindow
 
         _shader.Use();
         _vertexArray.Bind();
+        _interiorElementBuffer.Bind();
         _shader.SetColor("drawColor", Color4.Red);
-        GL.DrawElements(PrimitiveType.Triangles, _indices.Length * TriangularElement.Count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, _interiorElement.Length * TriangularElement.Count, DrawElementsType.UnsignedInt, 0);
         _shader.SetColor("drawColor", Color4.White);
-        GL.DrawElements(PrimitiveType.LineLoop, _indices.Length * TriangularElement.Count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.LineLoop, _interiorElement.Length * TriangularElement.Count, DrawElementsType.UnsignedInt, 0);
 
+        _boundaryElementBuffer.Bind();
+        _shader.SetColor("drawColor", Color4.Green);
+        GL.DrawElements(PrimitiveType.Lines, _boundaryElement.Length * LineElement.Count, DrawElementsType.UnsignedInt, 0);
 
         SwapBuffers();
     }
@@ -83,16 +94,19 @@ internal class Window : GameWindow
         base.Dispose();
         _shader.Dispose();
         _vertexArray.Dispose();
-        _indexBuffer.Dispose();
+        _interiorElementBuffer.Dispose();
+        _boundaryElementBuffer.Dispose();
         _dataBuffer.Dispose();
     }
 
     private readonly Shader _shader;
     private readonly VertexArray _vertexArray;
     private readonly ArrayBuffer<Vertex> _dataBuffer;
-    private readonly ArrayBuffer<TriangularElement> _indexBuffer;
+    private readonly ArrayBuffer<TriangularElement> _interiorElementBuffer;
+    private readonly ArrayBuffer<LineElement> _boundaryElementBuffer;
 
-    private readonly TriangularElement[] _indices = [new(0, 1, 3), new(1, 2, 3)];
+    private readonly TriangularElement[] _interiorElement = [new(0, 1, 3), new(1, 2, 3)];
+    private readonly LineElement[] _boundaryElement = [new(0, 1), new(1, 2), new(2, 3), new(3, 0)];
     private readonly Vertex[] _vertices = [new(0.5f, 0.5f, 0.0f), new(0.5f, -0.5f, 0.0f), new(-0.5f, -0.5f, 0.0f), new(-0.5f, 0.5f, 0.0f)];
 }
 
