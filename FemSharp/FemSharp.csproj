@@ -21,4 +21,8 @@
     <PackageReference Include="OpenTK" Version="4.9.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NumericalAnalysis\LinearAlgebra\LinearAlgebra.csproj" />
+  </ItemGroup>
+
 </Project>

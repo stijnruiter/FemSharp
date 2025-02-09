@@ -30,3 +30,6 @@ Generated\ Files/
 TestResults*/
 
 BenchmarkDotNet.Artifacts/
+
+# Submodules
+NumericalAnalysis

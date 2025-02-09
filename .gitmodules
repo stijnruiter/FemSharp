@@ -1,0 +1,3 @@
+[submodule "NumericalAnalysis"]
+	path = NumericalAnalysis
+	url = https://github.com/stijnruiter/NumericalAnalysis

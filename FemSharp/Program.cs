@@ -1,7 +1,4 @@
-﻿using FemSharp.Render;
-using OpenTK.Mathematics;
-
-namespace FemSharp;
+﻿namespace FemSharp;
 
 internal static class Program
 {
