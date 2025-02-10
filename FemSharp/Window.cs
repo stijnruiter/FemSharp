@@ -14,6 +14,7 @@ internal class Window : GameWindow
     public Window(int width, int height, string title)
         : base(GameWindowSettings.Default, NativeWindowSettings.Default)
     {
+        IsEventDriven = true;
         ClientSize = (width, height);
         Title = title;
         _renderer = new Renderer();
