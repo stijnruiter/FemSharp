@@ -4,10 +4,10 @@ Finite Element Method using C#/.NET and visualization with OpenGL.
 
 Currently, it is only able to solve a simple Helmholtz equation with a source:
 
-$$\begin{aligned} 
+$$\begin{align} 
 -\nabla^2 u + k\cdot u &= f\\ 
-\nabla u \cdot\dot{\mathbf{n}}&=0\text { on  } \Gamma
-\end{aligned}$$
+\nabla u \cdot\mathbf{\dot{n}}&=0\mbox{ on  } \Gamma
+\end{align}$$
 
 Using the method of manufactured solutions, we pick the for the analytic solution
  
