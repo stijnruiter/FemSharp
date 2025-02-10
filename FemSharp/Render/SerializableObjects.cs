@@ -3,7 +3,7 @@
 namespace FemSharp.Render;
 
 [StructLayout(LayoutKind.Sequential)]
-internal record struct Vertex(float X, float Y, float Z);
+internal record struct FemVertex(float X, float Y, float Z, float Value);
 
 [StructLayout(LayoutKind.Sequential)]
 internal record struct TriangularElement(uint I, uint J, uint K);

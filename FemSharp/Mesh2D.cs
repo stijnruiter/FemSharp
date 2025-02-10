@@ -1,4 +1,5 @@
 ﻿using FemSharp.Render;
+using LinearAlgebra.Structures;
 
 namespace FemSharp;
 
@@ -15,17 +16,20 @@ internal struct Rect(float left, float right, float bottom, float top)
 
 internal class Mesh2D
 {
-    public Vertex[] Vertices { get; }
+    public FemVertex[] Vertices { get; }
     public TriangularElement[] InteriorElements { get; }
     public LineElement[] BoundaryElements { get; }
     public LineElement[] InteriorEdges { get; }
 
-    public Mesh2D(Vertex[] vertices, TriangularElement[] interior, LineElement[] boundary)
+    public ColumnVector<float> VertexValues { get; set; }
+
+    public Mesh2D(FemVertex[] vertices, TriangularElement[] interior, LineElement[] boundary)
     {
         Vertices = vertices;
         InteriorElements = interior;
         BoundaryElements = boundary;
         InteriorEdges = EdgesFromElements(interior);
+        VertexValues = ColumnVector<float>.Zero(vertices.Length);
     }
 
     private static LineElement[] EdgesFromElements(TriangularElement[] elements)
@@ -39,5 +43,25 @@ internal class Mesh2D
         }
         LineElement UnidirectionalEdge(uint x, uint y) => new LineElement(x < y ? x : y, x < y ? y : x);
         return edges.Distinct().ToArray();
+    }
+
+    public void SetFemValues(AbstractVector<float> values)
+    {
+        if (values.Length != Vertices.Length)
+            throw new ArgumentException($"Element lengths do not match. {values.Length}!={Vertices.Length}");
+
+        // Normalize values between 0 and 1
+        var min = float.MaxValue;
+        var max = float.MinValue;
+        foreach(var value in values)
+        {
+            min = min > value ? value : min;
+            max = max < value ? value : max;
+        }
+
+        for (var i = 0; i < Vertices.Length; i++)
+        {
+            Vertices[i].Value = (values[i] - min) / (max - min);
+        }
     }
 }

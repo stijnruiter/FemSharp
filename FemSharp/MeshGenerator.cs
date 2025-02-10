@@ -6,7 +6,7 @@ internal class MeshGenerator
 {
     public static Mesh2D NaiveRectangle(Rect rect, uint nx, uint ny)
     {
-        List<Vertex> vertices = [];
+        List<FemVertex> vertices = [];
         List<TriangularElement> interiorElements = [];
         List<LineElement> boundaryElements = [];
 
@@ -19,7 +19,7 @@ internal class MeshGenerator
             {
                 var x = rect.Left + dx * i;
                 var y = rect.Bottom + dy * j;
-                vertices.Add(new Vertex(x, y, 0f));
+                vertices.Add(new FemVertex(x, y, 0f, 0f));
             }
         }
 
