@@ -6,5 +6,12 @@ uniform vec4 drawColor;
 
 void main()
 {
-    FragColor = vec4(FemValue, 0.1f, 0.1f, 1.0f);
+    if (drawColor.w > 0.0f)
+    {
+        FragColor = drawColor;
+    }
+    else
+    {
+        FragColor = vec4(FemValue, 0.1f, 0.1f, 1.0f);
+    }
 }

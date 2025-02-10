@@ -27,6 +27,17 @@ internal class Renderer : IDisposable
         GL.LineWidth(width);
     }
 
+    public void EnableLinearAlphaBlend()
+    {
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+    }
+
+    public void DisableAlphaBlend()
+    {
+        GL.Disable(EnableCap.Blend);
+    }
+
     public void DrawElements(Color4 color, ArrayBuffer<TriangularElement> elements)
     {
         SolidColorShader.Use();
