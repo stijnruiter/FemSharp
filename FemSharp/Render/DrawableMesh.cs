@@ -10,13 +10,13 @@ internal class DrawableMesh2D : IDrawableObject
     {
         _mesh = mesh;
         _vertexArray = new VertexArray();
-        _dataBuffer = new ArrayBuffer<FemVertex>(BufferTarget.ArrayBuffer, mesh.Vertices);
+        _dataBuffer = new ArrayBuffer<ValuedVertex>(BufferTarget.ArrayBuffer, mesh.Vertices);
         _interiorElementBuffer = new ArrayBuffer<TriangularElement>(BufferTarget.ElementArrayBuffer, mesh.InteriorElements);
         _interiorElementEdgesBuffer = new ArrayBuffer<LineElement>(BufferTarget.ElementArrayBuffer, mesh.InteriorEdges);
         _boundaryElementBuffer = new ArrayBuffer<LineElement>(BufferTarget.ElementArrayBuffer, mesh.BoundaryElements);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Unsafe.SizeOf<FemVertex>(), 0);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Unsafe.SizeOf<ValuedVertex>(), 0);
         GL.EnableVertexAttribArray(0);
-        GL.VertexAttribPointer(1, 1, VertexAttribPointerType.Float, false, Unsafe.SizeOf<FemVertex>(), sizeof(float) * 3);
+        GL.VertexAttribPointer(1, 1, VertexAttribPointerType.Float, false, Unsafe.SizeOf<ValuedVertex>(), sizeof(float) * 3);
         GL.EnableVertexAttribArray(1);
     }
 
@@ -53,7 +53,7 @@ internal class DrawableMesh2D : IDrawableObject
     private readonly Mesh2D _mesh;
 
     private readonly VertexArray _vertexArray;
-    private readonly ArrayBuffer<FemVertex> _dataBuffer;
+    private readonly ArrayBuffer<ValuedVertex> _dataBuffer;
     private readonly ArrayBuffer<TriangularElement> _interiorElementBuffer;
     private readonly ArrayBuffer<LineElement> _interiorElementEdgesBuffer;
     private readonly ArrayBuffer<LineElement> _boundaryElementBuffer;

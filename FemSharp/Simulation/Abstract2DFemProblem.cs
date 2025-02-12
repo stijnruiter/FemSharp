@@ -39,7 +39,7 @@ internal abstract class Abstract2DFemProblem
 
             if (_analyticSolution == null)
             {
-                _analyticSolution = new ColumnVector<float>(Mesh.Vertices.Select(AnalyticSolutionFunction).ToArray());
+                _analyticSolution = new ColumnVector<float>(Mesh.Vertices.Select(v => AnalyticSolutionFunction(v.Position)).ToArray());
             }
 
             return _analyticSolution;
@@ -54,15 +54,15 @@ internal abstract class Abstract2DFemProblem
         return _solution;
     }
 
-    protected abstract float AnalyticSolutionFunction(FemVertex position);
+    protected abstract float AnalyticSolutionFunction(Vertex position);
 
     protected void Add_Matrix_NablaA_NablaV(float scalar)
     {
         foreach (var element in Mesh.InteriorElements)
         {
-            var vertex0 = Mesh.Vertices[element.I];
-            var vertex1 = Mesh.Vertices[element.J];
-            var vertex2 = Mesh.Vertices[element.K];
+            var vertex0 = Mesh.Vertices[element.I].Position;
+            var vertex1 = Mesh.Vertices[element.J].Position;
+            var vertex2 = Mesh.Vertices[element.K].Position;
 
             var jacobian = Jacobian(vertex0, vertex1, vertex2);
             var detJ = jacobian.Determinant();
@@ -88,9 +88,9 @@ internal abstract class Abstract2DFemProblem
     {
         foreach (var element in Mesh.InteriorElements)
         {
-            var vertex0 = Mesh.Vertices[element.I];
-            var vertex1 = Mesh.Vertices[element.J];
-            var vertex2 = Mesh.Vertices[element.K];
+            var vertex0 = Mesh.Vertices[element.I].Position;
+            var vertex1 = Mesh.Vertices[element.J].Position;
+            var vertex2 = Mesh.Vertices[element.K].Position;
 
             var jacobian = Jacobian(vertex0, vertex1, vertex2);
             var detJ = jacobian.Determinant();
@@ -107,13 +107,13 @@ internal abstract class Abstract2DFemProblem
         }
     }
 
-    protected void Add_Vector_U_F(Func<FemVertex, float> sourceF)
+    protected void Add_Vector_U_F(Func<Vertex, float> sourceF)
     {
         foreach (var element in Mesh.InteriorElements)
         {
-            var vertex0 = Mesh.Vertices[element.I];
-            var vertex1 = Mesh.Vertices[element.J];
-            var vertex2 = Mesh.Vertices[element.K];
+            var vertex0 = Mesh.Vertices[element.I].Position;
+            var vertex1 = Mesh.Vertices[element.J].Position;
+            var vertex2 = Mesh.Vertices[element.K].Position;
 
             var jacobian = Jacobian(vertex0, vertex1, vertex2);
             var detJ = jacobian.Determinant();
@@ -128,12 +128,12 @@ internal abstract class Abstract2DFemProblem
         }
     }
 
-    protected void ApplyNaturalBoundaryConditions(Func<FemVertex, FemVertex, float> constNaturalBoundaryFunc)
+    protected void ApplyNaturalBoundaryConditions(Func<Vertex, Vertex, float> constNaturalBoundaryFunc)
     {
         foreach (var boundaryElement in Mesh.BoundaryElements)
         {
-            var vertex1 = Mesh.Vertices[boundaryElement.I];
-            var vertex2 = Mesh.Vertices[boundaryElement.J];
+            var vertex1 = Mesh.Vertices[(int)boundaryElement.I].Position;
+            var vertex2 = Mesh.Vertices[(int)boundaryElement.J].Position;
             var length = vertex1.Distance(vertex2);
 
             var constNaturalBoundary = 0.5f * length * constNaturalBoundaryFunc(vertex1, vertex2);
@@ -143,11 +143,11 @@ internal abstract class Abstract2DFemProblem
         }
     }
 
-    protected void ApplyEssentialBoundaryCondition(Func<FemVertex, float?> essentialBoundaryFunc)
+    protected void ApplyEssentialBoundaryCondition(Func<Vertex, float?> essentialBoundaryFunc)
     {
         foreach (var boundaryIndex in Mesh.BoundaryElements.SelectMany(line => new[] { line.I, line.J }).Distinct())
         {
-            if (essentialBoundaryFunc(Mesh.Vertices[boundaryIndex]) is not { } value)
+            if (essentialBoundaryFunc(Mesh.Vertices[(int)boundaryIndex].Position) is not { } value)
                 continue;
 
             for (var j = 0; j < MatrixA.ColumnCount; j++)
@@ -160,7 +160,7 @@ internal abstract class Abstract2DFemProblem
         }
     }
 
-    private static Matrix<float> Jacobian(FemVertex vertex1, FemVertex vertex2, FemVertex vertex3)
+    private static Matrix<float> Jacobian(Vertex vertex1, Vertex vertex2, Vertex vertex3)
     {
         return [[vertex2.X - vertex1.X, vertex3.X - vertex1.X],
              [vertex2.Y - vertex1.Y, vertex3.Y - vertex1.Y]];

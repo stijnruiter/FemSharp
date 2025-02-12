@@ -16,14 +16,14 @@ internal struct Rect(float left, float right, float bottom, float top)
 
 internal class Mesh2D
 {
-    public FemVertex[] Vertices { get; }
+    public ValuedVertex[] Vertices { get; }
     public TriangularElement[] InteriorElements { get; }
     public LineElement[] BoundaryElements { get; }
     public LineElement[] InteriorEdges { get; }
 
     public ColumnVector<float> VertexValues { get; set; }
 
-    public Mesh2D(FemVertex[] vertices, TriangularElement[] interior, LineElement[] boundary)
+    public Mesh2D(ValuedVertex[] vertices, TriangularElement[] interior, LineElement[] boundary)
     {
         Vertices = vertices;
         InteriorElements = interior;

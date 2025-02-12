@@ -21,7 +21,7 @@ internal class LaplaceFem : Abstract2DFemProblem
 
     public override bool HasAnalyticSolution => true;
 
-    private float NaturalBoundaryCondition(FemVertex vertex1, FemVertex vertex2)
+    private float NaturalBoundaryCondition(Vertex vertex1, Vertex vertex2)
     {
         // dU/dn = \nabla Y * n = (0, 1) * n
         if (vertex1.Y == vertex2.Y && vertex1.Y == _bounds.Bottom) // n = (0, -1)
@@ -33,12 +33,12 @@ internal class LaplaceFem : Abstract2DFemProblem
         return 0f; // n = (1, 0) | (-1, 0)
     }
 
-    private float? EssentialBoundaryCondition(FemVertex vertex1)
+    private float? EssentialBoundaryCondition(Vertex vertex1)
     {
         return (vertex1.X == _bounds.Left || vertex1.X == _bounds.Right) ? vertex1.Y : null;
     }
 
-    protected override float AnalyticSolutionFunction(FemVertex position)
+    protected override float AnalyticSolutionFunction(Vertex position)
     {
         return position.Y;
     }
