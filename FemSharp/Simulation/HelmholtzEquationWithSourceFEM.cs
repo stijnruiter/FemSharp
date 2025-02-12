@@ -1,79 +1,41 @@
 ﻿using FemSharp.Render;
-using LinearAlgebra.Structures;
 
 namespace FemSharp.Simulation;
 
-
 /// <summary>
-/// A very simple, not optimized, implementation of the FiniteElementAnalysis for Helmholtz equation, with source F
-/// -\nabla^2\phi + k\phi=f(x,y), with dirichlet boundary conditions
+/// Helmholtz equation with source
+/// -\nabla^2 u + u = f
+/// \nabla u = 0 on boundary
+/// f(x,y) =  cos(pi * (x - Bounds.Left) / Bounds.Width)) * cos(pi * (y - Bounds.Bottom) / Bounds.Height))
 /// </summary>
-internal class HelmholtzEquationWithSourceFEM
+internal class HelmholtzEquationWithSourceFEM : Abstract2DFemProblem
 {
-    private readonly Mesh2D _mesh;
-    private readonly Matrix<float> _matrixA;
-    private readonly ColumnVector<float> _columnVectorF;
-
-    private ColumnVector<float>? _solution;
-
-    public HelmholtzEquationWithSourceFEM(Mesh2D mesh, float k, Func<FemVertex, float> sourceF)
+    public HelmholtzEquationWithSourceFEM(Rect bounds, Mesh2D mesh, float k) : base(mesh)
     {
-        _mesh = mesh;
-        (_matrixA, _columnVectorF) = AssembleElementMatrix(k, sourceF);
+        _bounds = bounds;
+        _k = k;
+
+        Add_Matrix_NablaA_NablaV(-1f);
+        Add_Matrix_U_V(_k);
+
+        Add_Vector_U_F(SourceFunction);
     }
 
-    public ColumnVector<float> Solve()
-    {
-        if (_solution is null)
-        {
-            _solution = _matrixA.Solve(_columnVectorF, 0f);
-        }
+    public override bool HasAnalyticSolution => true;
 
-        return _solution;
+    protected override float AnalyticSolutionFunction(FemVertex position)
+    {
+        var radX = MathF.PI * (position.X + _bounds.Left) / _bounds.Width;
+        var radY = MathF.PI * (position.Y + _bounds.Bottom) / _bounds.Height;
+
+        return MathF.Cos(radX) * MathF.Cos(radY);
     }
 
-    private (Matrix<float>, ColumnVector<float>) AssembleElementMatrix(float k, Func<FemVertex, float> sourceF)
+    private float SourceFunction(FemVertex vertex)
     {
-        var elementMatrix = Matrix<float>.Zero(_mesh.Vertices.Length, _mesh.Vertices.Length);
-        var sourceVector = ColumnVector<float>.Zero(_mesh.Vertices.Length);
-
-        foreach(var element in _mesh.InteriorElements)
-        {
-            var vertex0 = _mesh.Vertices[element.I];
-            var vertex1 = _mesh.Vertices[element.J];
-            var vertex2 = _mesh.Vertices[element.K];
-
-            var jacobian = Jacobian(vertex0, vertex1, vertex2);
-            var detJ = jacobian.Determinant();
-            var invJT = jacobian.Inverse().Transpose();
-
-            var nablaPhi0 = invJT * new ColumnVector<float>([-1, -1]);
-            var nablaPhi1 = invJT * new ColumnVector<float>([1, 0]);
-            var nablaPhi2 = invJT * new ColumnVector<float>([0, 1]);
-
-            elementMatrix[(int)element.I, (int)element.I] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi0 + k * detJ / 12;
-            elementMatrix[(int)element.J, (int)element.I] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi0 + k * detJ / 24;
-            elementMatrix[(int)element.K, (int)element.I] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi0 + k * detJ / 24;
-            elementMatrix[(int)element.I, (int)element.J] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi1 + k * detJ / 24;
-            elementMatrix[(int)element.J, (int)element.J] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi1 + k * detJ / 12;
-            elementMatrix[(int)element.K, (int)element.J] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi1 + k * detJ / 24;
-            elementMatrix[(int)element.I, (int)element.K] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi2 + k * detJ / 24;
-            elementMatrix[(int)element.J, (int)element.K] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi2 + k * detJ / 24;
-            elementMatrix[(int)element.K, (int)element.K] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi2 + k * detJ / 12;
-
-            var f0 = sourceF(vertex0) / 24;
-            var f1 = sourceF(vertex1) / 24;
-            var f2 = sourceF(vertex2) / 24;
-
-            sourceVector[(int)element.I] += detJ * (2 * f0 + f1 + f2);
-            sourceVector[(int)element.J] += detJ * (f0 + 2 * f1 + f2);
-            sourceVector[(int)element.K] += detJ * (f0 + f1 + 2 * f2);
-
-        }
-        return (elementMatrix, sourceVector);
+        return (_k + MathF.Pow(MathF.PI / _bounds.Width, 2) + MathF.Pow(MathF.PI / _bounds.Height, 2)) * AnalyticSolutionFunction(vertex);
     }
 
-    private static Matrix<float> Jacobian(FemVertex vertex1, FemVertex vertex2, FemVertex vertex3) =>
-            [[vertex2.X - vertex1.X, vertex3.X - vertex1.X],
-             [vertex2.Y - vertex1.Y, vertex3.Y - vertex1.Y]];
+    private readonly Rect _bounds;
+    private readonly float _k;
 }
