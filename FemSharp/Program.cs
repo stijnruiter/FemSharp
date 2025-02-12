@@ -36,7 +36,8 @@ internal static class Program
                     break;
             }
         };
-        window.AddMesh(mesh);
+        window.DrawableObjects.Add(new DrawableMesh2D(mesh));
+        window.DrawableObjects.Add(new Axis());
         window.Run();
     }
 

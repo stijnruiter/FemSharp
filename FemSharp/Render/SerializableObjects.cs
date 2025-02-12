@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using OpenTK.Mathematics;
+using System.Runtime.InteropServices;
 
 namespace FemSharp.Render;
 
@@ -17,6 +18,17 @@ internal struct ValuedVertex(Vertex position, float value = 0.0f)
     public float Value = value;
 
     public ValuedVertex(float x, float y, float z, float value = 0.0f) : this(new Vertex(x, y, z), value)
+    {
+    }
+}
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct ColoredVertex(Vertex position, Color4 color)
+{
+    public Vertex Position = position;
+    public Color4 Value = color;
+
+    public ColoredVertex(float x, float y, float z, Color4 color) : this(new Vertex(x, y, z), color)
     {
     }
 }

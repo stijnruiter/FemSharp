@@ -39,11 +39,19 @@ internal class DrawableMesh2D : IDrawableObject
 
     public void Draw(Renderer renderer)
     {
+        _vertexArray.Bind();
+
         renderer.EnableLinearAlphaBlend();
         renderer.SetLineWidth(1);
-        renderer.DrawElements(ColorElements, _interiorElementBuffer);
-        renderer.DrawLines(ColorElementEdges, _interiorElementEdgesBuffer);
-        renderer.DrawLines(ColorBoundaryEdges, _boundaryElementBuffer);
+        
+        renderer.UseScalarColor();
+        renderer.DrawElements(_interiorElementBuffer);
+        
+        renderer.UseSolidColor(ColorElementEdges);
+        renderer.DrawLines(_interiorElementEdgesBuffer);
+        
+        renderer.UseSolidColor(ColorBoundaryEdges);
+        renderer.DrawLines(_boundaryElementBuffer);
     }
 
     public Color4 ColorElements { get; set; } = Color4.Transparent;

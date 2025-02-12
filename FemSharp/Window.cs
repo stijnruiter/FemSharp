@@ -9,6 +9,7 @@ namespace FemSharp;
 
 internal class Window : GameWindow
 {
+    // TODO: Z-index
     public readonly List<IDrawableObject> DrawableObjects = [];
 
     public Window(int width, int height, string title)
@@ -19,11 +20,6 @@ internal class Window : GameWindow
         Title = title;
         _renderer = new Renderer();
         _renderer.ClearColor(new Color4(0.2f, 0.3f, 0.3f, 1.0f));
-    }
-
-    public void AddMesh(Mesh2D mesh)
-    {
-        DrawableObjects.Add(new DrawableMesh2D(mesh));
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)

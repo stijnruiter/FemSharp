@@ -8,13 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\scalar_color.fragment.glsl" />
+    <None Remove="Resources\scalar_color.vertex.glsl" />
+    <None Remove="Resources\vertex_color.fragment.glsl" />
+    <None Remove="Resources\vertex_color.vertex.glsl" />
     <None Remove="shader.fragment.glsl" />
     <None Remove="shader.vertex.glsl" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\shader.fragment.glsl" />
-    <EmbeddedResource Include="Resources\shader.vertex.glsl" />
+    <EmbeddedResource Include="Resources\scalar_color.fragment.glsl" />
+    <EmbeddedResource Include="Resources\scalar_color.vertex.glsl" />
+    <EmbeddedResource Include="Resources\uniform_color.fragment.glsl" />
+    <EmbeddedResource Include="Resources\uniform_color.vertex.glsl" />
+    <EmbeddedResource Include="Resources\vertex_color.fragment.glsl" />
+    <EmbeddedResource Include="Resources\vertex_color.vertex.glsl" />
   </ItemGroup>
 
   <ItemGroup>
