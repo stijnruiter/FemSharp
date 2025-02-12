@@ -61,6 +61,7 @@ internal class Mesh2D
 
         for (var i = 0; i < Vertices.Length; i++)
         {
+            Vertices[i].Position.Z = values[i];
             Vertices[i].Value = (values[i] - min) / (max - min);
         }
     }

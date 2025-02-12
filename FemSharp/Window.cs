@@ -15,11 +15,21 @@ internal class Window : GameWindow
     public Window(int width, int height, string title)
         : base(GameWindowSettings.Default, NativeWindowSettings.Default)
     {
-        IsEventDriven = true;
+        UpdateFrequency = 45;
         ClientSize = (width, height);
         Title = title;
         _renderer = new Renderer();
         _renderer.ClearColor(new Color4(0.2f, 0.3f, 0.3f, 1.0f));
+        UpdateCamera();
+    }
+
+    private void UpdateCamera()
+    {
+        var model = Matrix4.CreateRotationX(-0.5f * MathF.PI);
+        Vector3 position = (new Vector4(2.5f * MathF.Cos(_angle), 2.5f * MathF.Sin(_angle), 2.5f, 1.0f) * model).Xyz;
+        var view = Matrix4.LookAt(position, Vector3.Zero, Vector3.UnitY);
+        var projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45), (float)Size.X / Size.Y, 0.1f, 100.0f);
+        _renderer.SetCamera(model, view, projection);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
@@ -29,6 +39,17 @@ internal class Window : GameWindow
         if (KeyboardState.IsKeyDown(Keys.Escape))
         {
             Close();
+        }
+
+        if (KeyboardState.IsKeyDown(Keys.Left))
+        {
+            _angle -= _rotationSpeed * (float)e.Time;
+            UpdateCamera();
+        }
+        else if (KeyboardState.IsKeyDown(Keys.Right))
+        {
+            _angle += _rotationSpeed * (float)e.Time;
+            UpdateCamera();
         }
 
         foreach (var drawable in DrawableObjects)
@@ -64,6 +85,7 @@ internal class Window : GameWindow
     }
 
     private readonly Renderer _renderer;
-
+    private float _angle = -0.8f; // 0.25f * MathF.PI;
+    private const float _rotationSpeed = 1.0f;
 }
 

@@ -14,6 +14,7 @@ internal class Renderer : IDisposable
         SolidColorShader = Shader.Create("uniform_color.vertex.glsl", "uniform_color.fragment.glsl");
         ScalarColorShader = Shader.Create("scalar_color.vertex.glsl", "scalar_color.fragment.glsl");
         VertexColorShader = Shader.Create("vertex_color.vertex.glsl", "vertex_color.fragment.glsl");
+        EnableDepthTest();
     }
 
     public void ClearColor(Color4 color)
@@ -23,7 +24,7 @@ internal class Renderer : IDisposable
 
     public void Clear()
     {
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     }
 
     public void SetLineWidth(int width)
@@ -40,6 +41,11 @@ internal class Renderer : IDisposable
     public void DisableAlphaBlend()
     {
         GL.Disable(EnableCap.Blend);
+    }
+
+    public void EnableDepthTest()
+    {
+        GL.Enable(EnableCap.DepthTest);
     }
 
     public void UseSolidColor(Color4 color)
@@ -79,5 +85,22 @@ internal class Renderer : IDisposable
     public void Dispose()
     {
         SolidColorShader.Dispose();
+        ScalarColorShader.Dispose();
+        VertexColorShader.Dispose();
+    }
+
+    internal void SetCamera(Matrix4 model, Matrix4 view, Matrix4 projection)
+    {
+        SolidColorShader.SetMatrix4("model", model);
+        SolidColorShader.SetMatrix4("view", view);
+        SolidColorShader.SetMatrix4("projection", projection);
+
+        ScalarColorShader.SetMatrix4("model", model);
+        ScalarColorShader.SetMatrix4("view", view);
+        ScalarColorShader.SetMatrix4("projection", projection);
+
+        VertexColorShader.SetMatrix4("model", model);
+        VertexColorShader.SetMatrix4("view", view);
+        VertexColorShader.SetMatrix4("projection", projection);
     }
 }

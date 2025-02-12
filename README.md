@@ -2,21 +2,21 @@
 
 Finite Element Method using C#/.NET and visualization with OpenGL.
 
-Currently, it is only able to solve a simple Helmholtz equation with a source:
+Currently, it is only able to solve the Helmholtz equation with a source and Laplace's equation with boundary conditions. For the simulations, a 2-dimensional rectangular grid is used, were $\Omega=[x_1, x_2]\times[y_1, y_2]$. The implemented FEM problems are then defined as
 
 $$\begin{align} 
 -\nabla^2 u + k\cdot u &= f\\ 
-\nabla u \cdot\mathbf{\dot{n}}&=0\mbox{ on  } \Gamma
+\nabla u \cdot\mathbf{\dot{n}}&=0\mbox{ on  } \partial\Omega,
 \end{align}$$
 
-Using the method of manufactured solutions, we pick the for the analytic solution
- 
-$$u(x,y)=\cos\left(\frac{\pi(x-L_1)}{L_2-L_1}\right)\cos\left(\frac{\pi(y-H_1)}{H_2-H_1}\right),$$
+and 
 
-resulting in a force 
+$$\begin{align} 
+-\nabla^2 u &= f,\\ 
+\frac{\partial u}{\partial n}(x,y_1) = \frac{\partial u}{\partial n}(x,y_2)=0,\\
+u(x_1, y) = u(x_2, y) =0.
+\end{align}$$
 
-$$f(x,y)=\left(k+\left(\frac{\pi}{L_2-L_1}\right)^2+\left(\frac{\pi}{H_2-H_1}\right)^2\right)u(x,y).$$
+This produces the following simulation:
 
-Using $k=5$, this produces in the following image:
-
-![Application screenshot, a simple generated rectangular mesh.](naive_rectangle.png)
+![Application screenshot, a simple generated rectangular mesh.](FemSharp.gif)

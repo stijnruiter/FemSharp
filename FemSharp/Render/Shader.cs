@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using System.Diagnostics;
 
 namespace FemSharp.Render;
 
@@ -44,13 +45,15 @@ internal class ShaderSource : IDisposable
     }
 }
 
+[DebuggerDisplay("{_vertexFileName}, {_fragmentFileName}")]
 internal class Shader : IDisposable
 {
     public int Handle { get; private set; }
 
-    private Shader()
+    private Shader(string vertexFileName, string fragmentFileName)
     {
-
+        _vertexFileName = vertexFileName;
+        _fragmentFileName = fragmentFileName;
     }
 
     public void Use()
@@ -80,7 +83,7 @@ internal class Shader : IDisposable
         }
         vert.Detach(shaderHandle);
         frag.Detach(shaderHandle);
-        return new Shader { Handle = shaderHandle };
+        return new Shader(vertexShader, fragmentShader) { Handle = shaderHandle };
     }
 
     public int GetUniformLocation(string uniformName)
@@ -122,8 +125,12 @@ internal class Shader : IDisposable
     {
         var location = GetUniformLocation(uniformName);
         if (location < 0)
+        {
+            Debug.Fail($"ShaderLocation {uniformName} not found.");
             return false;
+        }
 
+        Use();
         GL.Uniform4(location, value);
         return true;
     }
@@ -134,4 +141,20 @@ internal class Shader : IDisposable
         Handle = 0;
     }
 
+    internal bool SetMatrix4(string uniformName, Matrix4 view)
+    {
+        var location = GetUniformLocation(uniformName);
+        if (location < 0)
+        {
+            Debug.Fail($"ShaderLocation {uniformName} not found.");
+            return false;
+        }
+
+        Use();
+        GL.UniformMatrix4(location, true, ref view);
+        return true;
+    }
+
+    private readonly string _vertexFileName;
+    private readonly string _fragmentFileName;
 }
