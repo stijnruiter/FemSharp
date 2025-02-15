@@ -1,5 +1,6 @@
 ﻿using FemSharp.Render;
 using LinearAlgebra.Structures;
+using System.Diagnostics;
 
 namespace FemSharp.Simulation;
 
@@ -18,17 +19,7 @@ internal abstract class Abstract2DFemProblem
 
     public ColumnVector<float> VectorB { get; }
 
-    public ColumnVector<float> Solution
-    {
-        get
-        {
-            if (_solution == null)
-            {
-                _solution = Solve();
-            }
-            return _solution;
-        }
-    }
+    public ColumnVector<float>? Solution => _solution;
 
     public ColumnVector<float> AnalyticSolution
     {
@@ -48,10 +39,25 @@ internal abstract class Abstract2DFemProblem
 
     public abstract bool HasAnalyticSolution { get; }
 
+
     public ColumnVector<float> Solve()
     {
         _solution = MatrixA.Solve(VectorB);
+        Mesh.SetFemValues(_solution);
+        LogDifferences();
         return _solution;
+    }
+
+    private void LogDifferences()
+    {
+        string output = (GetType().Name + " finished") + Environment.NewLine;
+        if (Solution is not null && HasAnalyticSolution && AnalyticSolution is not null)
+        {
+            output += ($"|u-u_h|_1 = {(Solution - AnalyticSolution).Norm1()}") + Environment.NewLine;
+            output += ($"|u-u_h|_2 = {(Solution - AnalyticSolution).Norm2()}") + Environment.NewLine;
+            output += ($"|u-u_h|_Inf = {(Solution - AnalyticSolution).NormInf()}") + Environment.NewLine;
+        }
+        Debug.WriteLine(output);
     }
 
     protected abstract float AnalyticSolutionFunction(Vertex position);

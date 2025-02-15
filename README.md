@@ -12,7 +12,7 @@ $$\begin{align}
 and 
 
 $$\begin{align} 
--\nabla^2 u &= f,\\ 
+-\nabla^2 u = f,\\ 
 \frac{\partial u}{\partial n}(x,y_1) = \frac{\partial u}{\partial n}(x,y_2)=0,\\
 u(x_1, y) = u(x_2, y) =0.
 \end{align}$$

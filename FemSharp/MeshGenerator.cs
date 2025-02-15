@@ -56,4 +56,30 @@ internal class MeshGenerator
 
         return new Mesh2D(vertices.ToArray(), interiorElements.ToArray(), boundaryElements.ToArray());
     }
+
+    public static Mesh2D NaiveCircle(float cx, float cy, float radius, uint nTriangles)
+    {
+        List<ValuedVertex> vertices = [];
+        List<TriangularElement> interiorElements = [];
+        List<LineElement> boundaryElements = [];
+
+        uint pointsOnCircle = nTriangles + 2;
+        var angle = 2f * MathF.PI / pointsOnCircle;
+
+        boundaryElements.Add(new LineElement(0, 1));
+
+
+        for (uint i =0; i < pointsOnCircle; i++)
+        {
+            vertices.Add(new ValuedVertex(cx + radius * MathF.Cos(i * angle), cy + radius * MathF.Sin(i * angle), 0f));
+        }
+        for (uint i = 0; i < nTriangles; i++)
+        {
+            interiorElements.Add(new TriangularElement(0, i + 1, i + 2));
+            boundaryElements.Add(new LineElement(i + 1, i + 2));
+        }
+        boundaryElements.Add(new LineElement(0, pointsOnCircle - 1));
+
+        return new Mesh2D(vertices.ToArray(), interiorElements.ToArray(), boundaryElements.ToArray());
+    }
 }

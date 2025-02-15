@@ -20,7 +20,9 @@ internal class DrawableMesh2D : IDrawableObject
         GL.EnableVertexAttribArray(1);
     }
 
-    public void Update()
+    public void Update() { }
+
+    public void UpdateMeshData()
     {
         _dataBuffer.SetData(_mesh.Vertices);
         _interiorElementEdgesBuffer.SetData(_mesh.InteriorEdges);

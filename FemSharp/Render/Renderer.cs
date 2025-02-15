@@ -14,7 +14,6 @@ internal class Renderer : IDisposable
         SolidColorShader = Shader.Create("uniform_color.vertex.glsl", "uniform_color.fragment.glsl");
         ScalarColorShader = Shader.Create("scalar_color.vertex.glsl", "scalar_color.fragment.glsl");
         VertexColorShader = Shader.Create("vertex_color.vertex.glsl", "vertex_color.fragment.glsl");
-        EnableDepthTest();
     }
 
     public void ClearColor(Color4 color)
@@ -46,6 +45,11 @@ internal class Renderer : IDisposable
     public void EnableDepthTest()
     {
         GL.Enable(EnableCap.DepthTest);
+    }
+
+    public void DisableDepthTest()
+    {
+        GL.Disable(EnableCap.DepthTest);
     }
 
     public void UseSolidColor(Color4 color)

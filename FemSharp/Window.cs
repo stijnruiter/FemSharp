@@ -9,8 +9,8 @@ namespace FemSharp;
 
 internal class Window : GameWindow
 {
-    // TODO: Z-index
-    public readonly List<IDrawableObject> DrawableObjects = [];
+    public readonly List<IScene> Scenes = [];
+    private IScene? _currentScene = null;
 
     public Window(int width, int height, string title)
         : base(GameWindowSettings.Default, NativeWindowSettings.Default)
@@ -18,18 +18,18 @@ internal class Window : GameWindow
         UpdateFrequency = 45;
         ClientSize = (width, height);
         Title = title;
-        _renderer = new Renderer();
-        _renderer.ClearColor(new Color4(0.2f, 0.3f, 0.3f, 1.0f));
-        UpdateCamera();
+        Renderer = new Renderer();
+        Renderer.ClearColor(new Color4(0.2f, 0.3f, 0.3f, 1.0f));
+        ResetCameraPosition(Vector3.One * 2.5f, Vector3.UnitY);
     }
 
     private void UpdateCamera()
     {
-        var model = Matrix4.CreateRotationX(-0.5f * MathF.PI);
-        Vector3 position = (new Vector4(2.5f * MathF.Cos(_angle), 2.5f * MathF.Sin(_angle), 2.5f, 1.0f) * model).Xyz;
-        var view = Matrix4.LookAt(position, Vector3.Zero, Vector3.UnitY);
+        // TODO: Move this to its own class
+        var model = Matrix4.CreateRotationZ(-_angle);
+        var view = Matrix4.LookAt(_initialCameraPosition, Vector3.Zero, _up);
         var projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45), (float)Size.X / Size.Y, 0.1f, 100.0f);
-        _renderer.SetCamera(model, view, projection);
+        Renderer.SetCamera(model, view, projection);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
@@ -52,22 +52,28 @@ internal class Window : GameWindow
             UpdateCamera();
         }
 
-        foreach (var drawable in DrawableObjects)
+        foreach(var scene in Scenes)
         {
-            drawable.Update();
+            if (KeyboardState.IsKeyDown(scene.ActivateKey))
+            {
+                ActivateScene(scene);
+                return;
+            }
         }
+    }
 
+    public void ActivateScene(IScene scene)
+    {
+        scene?.Activate(this);
+        _currentScene = scene;
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         base.OnRenderFrame(e);
 
-        _renderer.Clear();
-        foreach (var drawable in DrawableObjects)
-        {
-            drawable.Draw(_renderer);
-        }
+        Renderer.Clear();
+        _currentScene?.Draw(Renderer);
         SwapBuffers();
     }
 
@@ -81,11 +87,22 @@ internal class Window : GameWindow
     public override void Dispose()
     {
         base.Dispose();
-        _renderer.Dispose();
+        Renderer.Dispose();
     }
 
-    private readonly Renderer _renderer;
-    private float _angle = -0.8f; // 0.25f * MathF.PI;
+    public void ResetCameraPosition(Vector3 position, Vector3 up)
+    {
+        _up = up;
+        _initialCameraPosition = position;
+        _angle = 0f;
+        UpdateCamera();
+    }
+
+    public readonly Renderer Renderer;
+
+    private Vector3 _up;
+    private Vector3 _initialCameraPosition;
+    private float _angle = 0f;
     private const float _rotationSpeed = 1.0f;
 }
 

@@ -1,9 +1,11 @@
 ﻿using OpenTK.Mathematics;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace FemSharp.Render;
 
 [StructLayout(LayoutKind.Sequential)]
+[DebuggerDisplay("({X}, {Y}, {Z})")]
 internal struct Vertex(float x, float y, float z)
 {
     public float X = x;
@@ -12,6 +14,7 @@ internal struct Vertex(float x, float y, float z)
 }
 
 [StructLayout(LayoutKind.Sequential)]
+[DebuggerDisplay("P: {Position}, V: {Value}")]
 internal struct ValuedVertex(Vertex position, float value = 0.0f)
 {
     public Vertex Position = position;
@@ -23,6 +26,7 @@ internal struct ValuedVertex(Vertex position, float value = 0.0f)
 }
 
 [StructLayout(LayoutKind.Sequential)]
+[DebuggerDisplay("P: {Position}, Color: {Value}")]
 internal struct ColoredVertex(Vertex position, Color4 color)
 {
     public Vertex Position = position;
@@ -34,6 +38,7 @@ internal struct ColoredVertex(Vertex position, Color4 color)
 }
 
 [StructLayout(LayoutKind.Sequential)]
+[DebuggerDisplay("({I}, {J}, {K})")]
 internal struct TriangularElement(uint i, uint j, uint k)
 {
     public uint I = i;
@@ -42,6 +47,7 @@ internal struct TriangularElement(uint i, uint j, uint k)
 }
 
 [StructLayout(LayoutKind.Sequential)]
+[DebuggerDisplay("({I}, {J})")]
 internal struct LineElement(uint i, uint j)
 {
     public uint I = i;
