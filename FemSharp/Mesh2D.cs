@@ -1,5 +1,5 @@
 ﻿using FemSharp.Render;
-using LinearAlgebra.Structures;
+using NumericalMath.LinearAlgebra.Structures;
 
 namespace FemSharp;
 

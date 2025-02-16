@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NumericalAnalysis\LinearAlgebra\LinearAlgebra.csproj" />
+    <ProjectReference Include="..\NumericalMath\NumericalMath\NumericalMath.csproj" />
   </ItemGroup>
 
 </Project>
