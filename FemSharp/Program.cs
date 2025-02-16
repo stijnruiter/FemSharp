@@ -1,5 +1,6 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 using FemSharp.Scenes;
+using NumericalMath.Geometry.Structures;
 
 namespace FemSharp;
 

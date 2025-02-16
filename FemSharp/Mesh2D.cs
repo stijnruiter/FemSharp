@@ -1,29 +1,19 @@
 ﻿using FemSharp.Render;
+using NumericalMath.Geometry.Structures;
 using NumericalMath.LinearAlgebra.Structures;
 
 namespace FemSharp;
 
-internal struct Rect(float left, float right, float bottom, float top)
-{
-    public float Left = left;
-    public float Right = right;
-    public float Top = top;
-    public float Bottom = bottom;
-
-    public readonly float Width => Right - Left;
-    public readonly float Height => Top - Bottom;
-}
-
 internal class Mesh2D
 {
     public ValuedVertex[] Vertices { get; }
-    public TriangularElement[] InteriorElements { get; }
+    public TriangleElement[] InteriorElements { get; }
     public LineElement[] BoundaryElements { get; }
     public LineElement[] InteriorEdges { get; }
 
     public ColumnVector<float> VertexValues { get; set; }
 
-    public Mesh2D(ValuedVertex[] vertices, TriangularElement[] interior, LineElement[] boundary)
+    public Mesh2D(ValuedVertex[] vertices, TriangleElement[] interior, LineElement[] boundary)
     {
         Vertices = vertices;
         InteriorElements = interior;
@@ -32,7 +22,7 @@ internal class Mesh2D
         VertexValues = ColumnVector<float>.Zero(vertices.Length);
     }
 
-    private static LineElement[] EdgesFromElements(TriangularElement[] elements)
+    private static LineElement[] EdgesFromElements(TriangleElement[] elements)
     {
         var edges = new List<LineElement>();
         foreach (var element in elements)
@@ -41,7 +31,7 @@ internal class Mesh2D
             edges.Add(UnidirectionalEdge(element.J, element.K));
             edges.Add(UnidirectionalEdge(element.K, element.I));
         }
-        LineElement UnidirectionalEdge(uint x, uint y) => new LineElement(x < y ? x : y, x < y ? y : x);
+        LineElement UnidirectionalEdge(int x, int y) => new LineElement(x < y ? x : y, x < y ? y : x);
         return edges.Distinct().ToArray();
     }
 

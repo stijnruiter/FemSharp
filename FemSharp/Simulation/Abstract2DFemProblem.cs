@@ -1,4 +1,5 @@
 ﻿using FemSharp.Render;
+using NumericalMath.Geometry.Structures;
 using NumericalMath.LinearAlgebra.Structures;
 using System.Diagnostics;
 
@@ -59,7 +60,7 @@ internal abstract class Abstract2DFemProblem
         Debug.WriteLine(output);
     }
 
-    protected abstract float AnalyticSolutionFunction(Vertex position);
+    protected abstract float AnalyticSolutionFunction(Vertex3 position);
 
     protected void Add_Matrix_NablaA_NablaV(float scalar)
     {
@@ -77,15 +78,15 @@ internal abstract class Abstract2DFemProblem
             var nablaPhi1 = invJT * new ColumnVector<float>([1, 0]);
             var nablaPhi2 = invJT * new ColumnVector<float>([0, 1]);
 
-            MatrixA[(int)element.I, (int)element.I] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi0;
-            MatrixA[(int)element.J, (int)element.I] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi0;
-            MatrixA[(int)element.K, (int)element.I] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi0;
-            MatrixA[(int)element.I, (int)element.J] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi1;
-            MatrixA[(int)element.J, (int)element.J] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi1;
-            MatrixA[(int)element.K, (int)element.J] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi1;
-            MatrixA[(int)element.I, (int)element.K] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi2;
-            MatrixA[(int)element.J, (int)element.K] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi2;
-            MatrixA[(int)element.K, (int)element.K] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi2;
+            MatrixA[element.I, element.I] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi0;
+            MatrixA[element.J, element.I] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi0;
+            MatrixA[element.K, element.I] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi0;
+            MatrixA[element.I, element.J] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi1;
+            MatrixA[element.J, element.J] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi1;
+            MatrixA[element.K, element.J] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi1;
+            MatrixA[element.I, element.K] += 0.5f * detJ * nablaPhi0.Transpose() * nablaPhi2;
+            MatrixA[element.J, element.K] += 0.5f * detJ * nablaPhi1.Transpose() * nablaPhi2;
+            MatrixA[element.K, element.K] += 0.5f * detJ * nablaPhi2.Transpose() * nablaPhi2;
         }
     }
 
@@ -100,19 +101,19 @@ internal abstract class Abstract2DFemProblem
             var jacobian = Jacobian(vertex0, vertex1, vertex2);
             var detJ = jacobian.Determinant();
 
-            MatrixA[(int)element.I, (int)element.I] += scalar * detJ / 12;
-            MatrixA[(int)element.J, (int)element.I] += scalar * detJ / 24;
-            MatrixA[(int)element.K, (int)element.I] += scalar * detJ / 24;
-            MatrixA[(int)element.I, (int)element.J] += scalar * detJ / 24;
-            MatrixA[(int)element.J, (int)element.J] += scalar * detJ / 12;
-            MatrixA[(int)element.K, (int)element.J] += scalar * detJ / 24;
-            MatrixA[(int)element.I, (int)element.K] += scalar * detJ / 24;
-            MatrixA[(int)element.J, (int)element.K] += scalar * detJ / 24;
-            MatrixA[(int)element.K, (int)element.K] += scalar * detJ / 12;
+            MatrixA[element.I, element.I] += scalar * detJ / 12;
+            MatrixA[element.J, element.I] += scalar * detJ / 24;
+            MatrixA[element.K, element.I] += scalar * detJ / 24;
+            MatrixA[element.I, element.J] += scalar * detJ / 24;
+            MatrixA[element.J, element.J] += scalar * detJ / 12;
+            MatrixA[element.K, element.J] += scalar * detJ / 24;
+            MatrixA[element.I, element.K] += scalar * detJ / 24;
+            MatrixA[element.J, element.K] += scalar * detJ / 24;
+            MatrixA[element.K, element.K] += scalar * detJ / 12;
         }
     }
 
-    protected void Add_Vector_U_F(Func<Vertex, float> sourceF)
+    protected void Add_Vector_U_F(Func<Vertex3, float> sourceF)
     {
         foreach (var element in Mesh.InteriorElements)
         {
@@ -127,13 +128,13 @@ internal abstract class Abstract2DFemProblem
             var f1 = sourceF(vertex1) / 24;
             var f2 = sourceF(vertex2) / 24;
 
-            VectorB[(int)element.I] += detJ * (2 * f0 + f1 + f2);
-            VectorB[(int)element.J] += detJ * (f0 + 2 * f1 + f2);
-            VectorB[(int)element.K] += detJ * (f0 + f1 + 2 * f2);
+            VectorB[element.I] += detJ * (2 * f0 + f1 + f2);
+            VectorB[element.J] += detJ * (f0 + 2 * f1 + f2);
+            VectorB[element.K] += detJ * (f0 + f1 + 2 * f2);
         }
     }
 
-    protected void ApplyNaturalBoundaryConditions(Func<Vertex, Vertex, float> constNaturalBoundaryFunc)
+    protected void ApplyNaturalBoundaryConditions(Func<Vertex3, Vertex3, float> constNaturalBoundaryFunc)
     {
         foreach (var boundaryElement in Mesh.BoundaryElements)
         {
@@ -143,29 +144,29 @@ internal abstract class Abstract2DFemProblem
 
             var constNaturalBoundary = 0.5f * length * constNaturalBoundaryFunc(vertex1, vertex2);
 
-            VectorB[(int)boundaryElement.I] += constNaturalBoundary;
-            VectorB[(int)boundaryElement.J] += constNaturalBoundary;
+            VectorB[boundaryElement.I] += constNaturalBoundary;
+            VectorB[boundaryElement.J] += constNaturalBoundary;
         }
     }
 
-    protected void ApplyEssentialBoundaryCondition(Func<Vertex, float?> essentialBoundaryFunc)
+    protected void ApplyEssentialBoundaryCondition(Func<Vertex3, float?> essentialBoundaryFunc)
     {
         foreach (var boundaryIndex in Mesh.BoundaryElements.SelectMany(line => new[] { line.I, line.J }).Distinct())
         {
-            if (essentialBoundaryFunc(Mesh.Vertices[(int)boundaryIndex].Position) is not { } value)
+            if (essentialBoundaryFunc(Mesh.Vertices[boundaryIndex].Position) is not { } value)
                 continue;
 
             for (var j = 0; j < MatrixA.ColumnCount; j++)
             {
-                MatrixA[(int)boundaryIndex, j] = 0.0f;
+                MatrixA[boundaryIndex, j] = 0.0f;
             }
 
-            MatrixA[(int)boundaryIndex, (int)boundaryIndex] = 1.0f;
-            VectorB[(int)boundaryIndex] = value;
+            MatrixA[boundaryIndex, boundaryIndex] = 1.0f;
+            VectorB[boundaryIndex] = value;
         }
     }
 
-    private static Matrix<float> Jacobian(Vertex vertex1, Vertex vertex2, Vertex vertex3)
+    private static Matrix<float> Jacobian(Vertex3 vertex1, Vertex3 vertex2, Vertex3 vertex3)
     {
         return [[vertex2.X - vertex1.X, vertex3.X - vertex1.X],
              [vertex2.Y - vertex1.Y, vertex3.Y - vertex1.Y]];

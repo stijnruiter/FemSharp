@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using NumericalMath.Geometry.Structures;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Runtime.CompilerServices;
 
@@ -11,7 +12,7 @@ internal class DrawableMesh2D : IDrawableObject
         _mesh = mesh;
         _vertexArray = new VertexArray();
         _dataBuffer = new ArrayBuffer<ValuedVertex>(BufferTarget.ArrayBuffer, mesh.Vertices);
-        _interiorElementBuffer = new ArrayBuffer<TriangularElement>(BufferTarget.ElementArrayBuffer, mesh.InteriorElements);
+        _interiorElementBuffer = new ArrayBuffer<TriangleElement>(BufferTarget.ElementArrayBuffer, mesh.InteriorElements);
         _interiorElementEdgesBuffer = new ArrayBuffer<LineElement>(BufferTarget.ElementArrayBuffer, mesh.InteriorEdges);
         _boundaryElementBuffer = new ArrayBuffer<LineElement>(BufferTarget.ElementArrayBuffer, mesh.BoundaryElements);
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Unsafe.SizeOf<ValuedVertex>(), 0);
@@ -63,7 +64,7 @@ internal class DrawableMesh2D : IDrawableObject
 
     private readonly VertexArray _vertexArray;
     private readonly ArrayBuffer<ValuedVertex> _dataBuffer;
-    private readonly ArrayBuffer<TriangularElement> _interiorElementBuffer;
+    private readonly ArrayBuffer<TriangleElement> _interiorElementBuffer;
     private readonly ArrayBuffer<LineElement> _interiorElementEdgesBuffer;
     private readonly ArrayBuffer<LineElement> _boundaryElementBuffer;
 }

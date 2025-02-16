@@ -1,4 +1,4 @@
-﻿using FemSharp.Render;
+﻿using NumericalMath.Geometry.Structures;
 
 namespace FemSharp.Simulation;
 
@@ -23,7 +23,7 @@ internal class HelmholtzEquationWithSourceFEM : Abstract2DFemProblem
 
     public override bool HasAnalyticSolution => true;
 
-    protected override float AnalyticSolutionFunction(Vertex position)
+    protected override float AnalyticSolutionFunction(Vertex3 position)
     {
         var radX = MathF.PI * (position.X + _bounds.Left) / _bounds.Width;
         var radY = MathF.PI * (position.Y + _bounds.Bottom) / _bounds.Height;
@@ -31,7 +31,7 @@ internal class HelmholtzEquationWithSourceFEM : Abstract2DFemProblem
         return MathF.Cos(radX) * MathF.Cos(radY);
     }
 
-    private float SourceFunction(Vertex vertex)
+    private float SourceFunction(Vertex3 vertex)
     {
         return (_k + MathF.Pow(MathF.PI / _bounds.Width, 2) + MathF.Pow(MathF.PI / _bounds.Height, 2)) * AnalyticSolutionFunction(vertex);
     }

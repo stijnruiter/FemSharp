@@ -1,5 +1,6 @@
 ﻿using FemSharp.Render;
 using FemSharp.Simulation;
+using NumericalMath.Geometry.Structures;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -13,7 +14,7 @@ internal class LaplaceScene : IScene
     private Axis _axis;
     public Abstract2DFemProblem Simulation { get; }
 
-    public LaplaceScene(Keys key, Rect bounds, uint nx, uint ny)
+    public LaplaceScene(Keys key, Rect bounds, int nx, int ny)
     {
         ActivateKey = key;
         Mesh = MeshGenerator.NaiveRectangle(bounds, nx, ny);

@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using NumericalMath.Geometry.Structures;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace FemSharp.Render;
@@ -68,7 +69,7 @@ internal class Renderer : IDisposable
         VertexColorShader.Use();
     }
 
-    public void DrawElements(ArrayBuffer<TriangularElement> elements)
+    public void DrawElements(ArrayBuffer<TriangleElement> elements)
     {
         elements.Bind();
         GL.DrawElements(PrimitiveType.Triangles, elements.Length * 3, DrawElementsType.UnsignedInt, 0);

@@ -1,4 +1,5 @@
 ﻿using FemSharp.Render;
+using NumericalMath.Geometry.Structures;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
@@ -15,20 +16,20 @@ namespace FemSharp.Scenes
         public DelaunayScene(Keys key, Rect bounds, int n)
         {
             ActivateKey = key;
-            var vertices = RendomVertices(bounds, n);
+            Vertex2[] vertices = RendomVertices(bounds, n);
             Mesh = MeshGenerator.DelaunayTriangulation(vertices);
             Debug.Assert(Mesh.Vertices.Length == n);
             _drawableMesh2D = new DrawableMesh2D(Mesh);
             _axis = new Axis();
         }
 
-        private Vertex[] RendomVertices(Rect bounds, int n)
+        private Vertex2[] RendomVertices(Rect bounds, int n)
         {
             var random = new Random();
-            var vertices = new Vertex[n];
+            var vertices = new Vertex2[n];
             for (int i = 0; i < n; i++)
             {
-                vertices[i] = new Vertex(bounds.Left + random.NextSingle() * bounds.Width, bounds.Bottom + random.NextSingle() * bounds.Height, 0f);
+                vertices[i] = new Vertex2(bounds.Left + random.NextSingle() * bounds.Width, bounds.Bottom + random.NextSingle() * bounds.Height);
             }
             return vertices;
         }
