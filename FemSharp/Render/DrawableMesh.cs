@@ -44,7 +44,6 @@ internal class DrawableMesh2D : IDrawableObject
         _vertexArray.Bind();
 
         renderer.EnableLinearAlphaBlend();
-        renderer.SetLineWidth(1);
         
         renderer.UseScalarColor();
         renderer.DrawElements(_interiorElementBuffer);
@@ -58,7 +57,7 @@ internal class DrawableMesh2D : IDrawableObject
 
     public Color4 ColorElements { get; set; } = Color4.Transparent;
     public Color4 ColorElementEdges { get; set; } = new Color4(255, 255, 255, 100);
-    public Color4 ColorBoundaryEdges { get; set; } = new Color4(255, 255, 255, 100);
+    public Color4 ColorBoundaryEdges { get; set; } = new Color4(255, 100, 255, 100);
 
     private readonly Mesh2D _mesh;
 

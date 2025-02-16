@@ -39,7 +39,6 @@ internal abstract class Abstract2DFemProblem
 
     public abstract bool HasAnalyticSolution { get; }
 
-
     public ColumnVector<float> Solve()
     {
         _solution = MatrixA.Solve(VectorB);

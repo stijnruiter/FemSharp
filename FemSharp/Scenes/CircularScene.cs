@@ -11,10 +11,10 @@ internal class CircularScene : IScene
     private DrawableMesh2D _drawableMesh { get; }
     private Axis _axis { get; }
 
-    public CircularScene(Keys activateKey, float cx, float cy, float radius, uint nTriangles)
+    public CircularScene(Keys activateKey, float cx, float cy, float radius, float maxh)
     {
         ActivateKey = activateKey;
-        Mesh = MeshGenerator.NaiveCircle(cx, cy, radius, nTriangles);
+        Mesh = MeshGenerator.NaiveCircle(cx, cy, radius, maxh);
         _drawableMesh = new DrawableMesh2D(Mesh);
         _axis = new Axis();
     }

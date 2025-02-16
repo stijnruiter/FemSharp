@@ -44,6 +44,11 @@ internal struct TriangularElement(uint i, uint j, uint k)
     public uint I = i;
     public uint J = j;
     public uint K = k;
+
+    public override string ToString()
+    {
+        return $"({I}, {J}, {K})";
+    }
 }
 
 [StructLayout(LayoutKind.Sequential)]
