@@ -13,7 +13,7 @@ namespace FemSharp.Scenes
         public DrawableMesh2D _drawableMesh2D { get; }
         public Axis _axis { get; }
 
-        public DelaunayScene(Keys key, Rect bounds, int n)
+        public DelaunayScene(Keys key, Rectangle bounds, int n)
         {
             ActivateKey = key;
             Vertex2[] vertices = RendomVertices(bounds, n);
@@ -23,7 +23,7 @@ namespace FemSharp.Scenes
             _axis = new Axis();
         }
 
-        private Vertex2[] RendomVertices(Rect bounds, int n)
+        private Vertex2[] RendomVertices(Rectangle bounds, int n)
         {
             var random = new Random();
             var vertices = new Vertex2[n];

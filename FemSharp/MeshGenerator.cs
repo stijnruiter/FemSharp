@@ -6,7 +6,7 @@ namespace FemSharp;
 
 internal class MeshGenerator
 {
-    public static Mesh2D NaiveRectangle(Rect rect, int nx, int ny)
+    public static Mesh2D NaiveRectangle(Rectangle rect, int nx, int ny)
     {
         List<ValuedVertex> vertices = [];
         List<TriangleElement> interiorElements = [];
@@ -87,10 +87,10 @@ internal class MeshGenerator
         return new Mesh2D(vertices.Select(v => new ValuedVertex(v)).ToArray(), interiorElements.ToArray(), boundaryElements.ToArray());
     }
 
-    public static Mesh2D DelaunayTriangulation(ReadOnlySpan<Vertex2> vertices)
+    public static Mesh2D DelaunayTriangulation(Vertex2[] vertices)
     {
-        var triangulation = Delaunay.CreateTriangulation(vertices);
-        return new Mesh2D(triangulation.Vertices.Select(v => new ValuedVertex(v)).ToArray(), triangulation.Interior, triangulation.Boundary);
+        var triangulation = new Delaunay().CreateTriangulation(vertices);
+        return new Mesh2D(vertices.Select(v => new ValuedVertex(v)).ToArray(), triangulation.Interior.ToArray(), triangulation.Boundary.ToArray());
     }
 
 }

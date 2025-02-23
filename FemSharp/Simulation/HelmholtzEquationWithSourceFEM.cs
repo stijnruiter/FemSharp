@@ -10,7 +10,7 @@ namespace FemSharp.Simulation;
 /// </summary>
 internal class HelmholtzEquationWithSourceFEM : Abstract2DFemProblem
 {
-    public HelmholtzEquationWithSourceFEM(Rect bounds, Mesh2D mesh, float k) : base(mesh)
+    public HelmholtzEquationWithSourceFEM(Rectangle bounds, Mesh2D mesh, float k) : base(mesh)
     {
         _bounds = bounds;
         _k = k;
@@ -36,6 +36,6 @@ internal class HelmholtzEquationWithSourceFEM : Abstract2DFemProblem
         return (_k + MathF.Pow(MathF.PI / _bounds.Width, 2) + MathF.Pow(MathF.PI / _bounds.Height, 2)) * AnalyticSolutionFunction(vertex);
     }
 
-    private readonly Rect _bounds;
+    private readonly Rectangle _bounds;
     private readonly float _k;
 }

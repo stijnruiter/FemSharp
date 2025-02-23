@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumericalMath", "NumericalM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumericalMath.Tests", "NumericalMath\NumericalMath.Tests\NumericalMath.Tests.csproj", "{C2044AEC-AC4D-409F-A19E-2E0131B68EFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "NumericalMath\Benchmarks\Benchmarks.csproj", "{AE184D35-AEAD-4B65-873F-CEE455354437}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C2044AEC-AC4D-409F-A19E-2E0131B68EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2044AEC-AC4D-409F-A19E-2E0131B68EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2044AEC-AC4D-409F-A19E-2E0131B68EFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE184D35-AEAD-4B65-873F-CEE455354437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE184D35-AEAD-4B65-873F-CEE455354437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE184D35-AEAD-4B65-873F-CEE455354437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE184D35-AEAD-4B65-873F-CEE455354437}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

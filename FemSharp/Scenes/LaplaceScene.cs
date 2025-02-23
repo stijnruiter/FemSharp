@@ -14,7 +14,7 @@ internal class LaplaceScene : IScene
     private Axis _axis;
     public Abstract2DFemProblem Simulation { get; }
 
-    public LaplaceScene(Keys key, Rect bounds, int nx, int ny)
+    public LaplaceScene(Keys key, Rectangle bounds, int nx, int ny)
     {
         ActivateKey = key;
         Mesh = MeshGenerator.NaiveRectangle(bounds, nx, ny);

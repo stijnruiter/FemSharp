@@ -10,7 +10,7 @@ namespace FemSharp.Simulation;
 /// </summary>
 internal class LaplaceFem : Abstract2DFemProblem
 {
-    public LaplaceFem(Rect bounds, Mesh2D mesh) : base(mesh)
+    public LaplaceFem(Rectangle bounds, Mesh2D mesh) : base(mesh)
     {
         _bounds = bounds;
         Add_Matrix_NablaA_NablaV(1.0f);
@@ -43,5 +43,5 @@ internal class LaplaceFem : Abstract2DFemProblem
         return position.Y;
     }
 
-    private readonly Rect _bounds;
+    private readonly Rectangle _bounds;
 }

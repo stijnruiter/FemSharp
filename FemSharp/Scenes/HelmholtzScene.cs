@@ -14,7 +14,7 @@ internal class HelmholtzScene : IScene
     private Axis _axis;
     public Abstract2DFemProblem Simulation { get; }
 
-    public HelmholtzScene(Keys key, Rect bounds, int nx, int ny, float k)
+    public HelmholtzScene(Keys key, Rectangle bounds, int nx, int ny, float k)
     {
         ActivateKey = key;
         Mesh = MeshGenerator.NaiveRectangle(bounds, nx, ny);
