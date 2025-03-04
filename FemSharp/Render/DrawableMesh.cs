@@ -5,6 +5,38 @@ using System.Runtime.CompilerServices;
 
 namespace FemSharp.Render;
 
+internal class DrawableLines : IDrawableObject
+{
+    public DrawableLines(PlanarStraightLineGraph graph)
+    {
+        _vertexArray = new VertexArray();
+        _dataBuffer = new ArrayBuffer<Vertex3>(BufferTarget.ArrayBuffer, graph.Vertices.Select(v => new Vertex3(v.X, v.Y, 0f)).ToArray());
+        _interiorElementEdgesBuffer = new ArrayBuffer<LineElement>(BufferTarget.ElementArrayBuffer, graph.Segments.ToArray());
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Unsafe.SizeOf<Vertex3>(), 0);
+        GL.EnableVertexAttribArray(0);
+    }
+
+    public void Dispose()
+    {
+        _vertexArray.Dispose();
+        _dataBuffer.Dispose();
+        _interiorElementEdgesBuffer.Dispose();
+    }
+    
+    private readonly VertexArray _vertexArray;
+    private readonly ArrayBuffer<Vertex3> _dataBuffer;
+    private readonly ArrayBuffer<LineElement> _interiorElementEdgesBuffer;
+    public void Update() { }
+
+    public void Draw(Renderer renderer)
+    {
+        _vertexArray.Bind();
+
+        renderer.UseSolidColor(Color4.Black);
+        renderer.DrawLines(_interiorElementEdgesBuffer);
+    }
+}
+
 internal class DrawableMesh2D : IDrawableObject
 {
     public DrawableMesh2D(Mesh2D mesh)

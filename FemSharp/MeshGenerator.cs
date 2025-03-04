@@ -4,7 +4,7 @@ using NumericalMath.Geometry.Structures;
 
 namespace FemSharp;
 
-internal class MeshGenerator
+internal static class MeshGenerator
 {
     public static Mesh2D NaiveRectangle(Rectangle rect, int nx, int ny)
     {
@@ -86,10 +86,24 @@ internal class MeshGenerator
 
         return new Mesh2D(vertices.Select(v => new ValuedVertex(v)).ToArray(), interiorElements.ToArray(), boundaryElements.ToArray());
     }
+    
+    public static RefinedDelaunay DelaunayCircle(float cx, float cy, float radius, float maxh)
+    {
+        var graph = new PlanarStraightLineGraph();
+        var pointsOnCircle = (int)MathF.Ceiling(MathF.PI / MathF.Asin(0.5f * maxh / radius));
+        pointsOnCircle = pointsOnCircle < 3 ? 3 : pointsOnCircle;
+        var angle = 2f * MathF.PI / pointsOnCircle;
+        graph.AddClosedLineSegments(Enumerable.Range(0, pointsOnCircle)
+            .Select(i => new Vertex2(cx + radius * MathF.Cos(i * angle), cy + radius * MathF.Sin(i * angle))).ToArray());
+        var delaunay =  RefinedDelaunay.CreateTriangulation(graph);
+        delaunay.InsertPoint(new Vertex2(cx, cy));
+        return delaunay;
+    }
+    
 
     public static Mesh2D DelaunayTriangulation(Vertex2[] vertices)
     {
-        var triangulation = new Delaunay().CreateTriangulation(vertices);
+        var triangulation = Delaunay.CreateTriangulation(vertices).ToMesh();
         return new Mesh2D(vertices.Select(v => new ValuedVertex(v)).ToArray(), triangulation.Interior.ToArray(), triangulation.Boundary.ToArray());
     }
 

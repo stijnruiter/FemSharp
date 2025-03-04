@@ -14,7 +14,10 @@ internal class CircularScene : IScene
     public CircularScene(Keys activateKey, float cx, float cy, float radius, float maxh)
     {
         ActivateKey = activateKey;
-        Mesh = MeshGenerator.NaiveCircle(cx, cy, radius, maxh);
+        var delaunay = MeshGenerator.DelaunayCircle(cx, cy, radius, maxh);
+        delaunay.Refine(25);
+        var triangulation = delaunay.ToMesh();
+        Mesh = new Mesh2D(triangulation.Vertices.Select(v => new ValuedVertex(v)).ToArray(), triangulation.Interior.ToArray(), triangulation.Boundary.ToArray());
         _drawableMesh = new DrawableMesh2D(Mesh);
         _axis = new Axis();
     }
