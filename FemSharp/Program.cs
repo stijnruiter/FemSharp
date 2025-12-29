@@ -15,6 +15,7 @@ internal static class Program
         window.Scenes.Add(new CircularScene(Keys.Q, 0, 0, 1, 0.1f));
         window.Scenes.Add(new HelmholtzScene(Keys.W, bounds, 10, 10, 5));
         window.Scenes.Add(new LaplaceScene(Keys.E, bounds, 10, 10));
+        window.Scenes.Add(new ApplePlyScene(Keys.T));
         window.ActivateScene(window.Scenes.First());
         
         window.Run();

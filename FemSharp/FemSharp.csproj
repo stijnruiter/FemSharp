@@ -33,4 +33,11 @@
     <ProjectReference Include="..\NumericalMath\NumericalMath\NumericalMath.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\NumericalMath\NumericalMath.Tests\Geometry\Import\TestData\apple.ply">
+      <Link>Resources\apple.ply</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
