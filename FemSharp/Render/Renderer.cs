@@ -1,4 +1,5 @@
-﻿using NumericalMath.Geometry.Structures;
+﻿using System;
+using NumericalMath.Geometry.Structures;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 

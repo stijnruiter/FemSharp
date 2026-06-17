@@ -1,4 +1,5 @@
-﻿using FemSharp.Render;
+﻿using System.Linq;
+using FemSharp.Render;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -7,9 +8,9 @@ namespace FemSharp.Scenes;
 internal class CircularScene : IScene
 {
     public Keys ActivateKey { get; }
-    public Mesh2D Mesh { get; }
-    private DrawableMesh2D _drawableMesh { get; }
-    private Axis _axis { get; }
+    private Mesh2D Mesh { get; }
+    private readonly DrawableMesh2D _drawableMesh;
+    private readonly Axis _axis;
 
     public CircularScene(Keys activateKey, float cx, float cy, float radius, float maxh)
     {

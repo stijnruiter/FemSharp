@@ -1,4 +1,7 @@
-﻿using FemSharp.Render;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FemSharp.Render;
 using NumericalMath.Geometry;
 using NumericalMath.Geometry.Structures;
 

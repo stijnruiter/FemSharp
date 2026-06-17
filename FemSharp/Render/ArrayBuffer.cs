@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using System;
+using OpenTK.Graphics.OpenGL4;
 using System.Runtime.CompilerServices;
 
 namespace FemSharp.Render;

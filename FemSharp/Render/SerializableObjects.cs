@@ -1,4 +1,5 @@
-﻿using NumericalMath.Geometry.Structures;
+﻿using System;
+using NumericalMath.Geometry.Structures;
 using OpenTK.Mathematics;
 using System.Diagnostics;
 using System.Runtime.InteropServices;

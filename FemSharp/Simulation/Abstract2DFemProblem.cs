@@ -1,13 +1,15 @@
-﻿using FemSharp.Render;
+﻿using System;
+using FemSharp.Render;
 using NumericalMath.Geometry.Structures;
 using NumericalMath.LinearAlgebra.Structures;
 using System.Diagnostics;
+using System.Linq;
 
 namespace FemSharp.Simulation;
 
 internal abstract class Abstract2DFemProblem
 {
-    public Abstract2DFemProblem(Mesh2D mesh)
+    protected Abstract2DFemProblem(Mesh2D mesh)
     {
         Mesh = mesh;
         MatrixA = Matrix<float>.Zero(mesh.Vertices.Length);

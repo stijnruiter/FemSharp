@@ -8,7 +8,7 @@ internal static class MathImpl
 {
     internal static void ElementwiseAdditionSpan<T>(ReadOnlySpan<T> left, ReadOnlySpan<T> right, Span<T> result) where T : struct, INumber<T>
     {
-        for (int i = 0; i < left.Length; i++)
+        for (var i = 0; i < left.Length; i++)
         {
             result[i] = left[i] + right[i];
         }
@@ -38,6 +38,7 @@ internal static class MathImpl
         }
     }
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
     internal static unsafe void ElementwiseAdditionUnsafe<T>(ReadOnlySpan<T> left, ReadOnlySpan<T> right, Span<T> result) where T : struct, INumber<T>
     {
         fixed (T* pa = &left[0])
@@ -89,6 +90,7 @@ internal static class MathImpl
             }
         }
     }
+#pragma warning restore CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 
     internal static void ElementwiseAdditionVectorized<T>(ReadOnlySpan<T> left, ReadOnlySpan<T> right, Span<T> result) where T : struct, INumber<T>
     {
